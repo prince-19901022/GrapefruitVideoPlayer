@@ -1,12 +1,14 @@
 package com.player.video.grapefruitvideoplayer;
 
 import android.content.res.Configuration;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "www.d.com";
+    private static final Fragment controllerOverlay = new VideoControllerFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -30,6 +34,19 @@ public class MainActivity extends AppCompatActivity {
         final TextView msg = findViewById(R.id.msg);
 
         msg.setText( isLandscape() ? "Orientation : Landscape" : "Orientation : Portrait");
+
+        msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(isLandscape()){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(android.R.id.content, controllerOverlay)
+                            .commit();
+                }
+            }
+        });
     }
 
     private boolean isLandscape(){
@@ -52,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "A dialog will appear", Toast.LENGTH_SHORT).show();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

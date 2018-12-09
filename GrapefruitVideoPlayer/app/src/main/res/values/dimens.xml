@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="touch_target_padding">12dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="btn_size">48dp</dimen>
+    <dimen name="text_size_small">8sp</dimen>
+    <dimen name="special_icon_size">30dp</dimen>
+    <dimen name="tv_backward_margin">3dp</dimen>
+</resources>
