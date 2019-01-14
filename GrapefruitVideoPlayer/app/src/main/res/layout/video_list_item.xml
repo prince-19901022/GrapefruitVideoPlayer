@@ -8,9 +8,10 @@
 
     <ImageView
         android:id="@+id/iv_thumbnail"
-        android:layout_width="@dimen/thumbnail_size"
-        android:layout_height="@dimen/thumbnail_size"
+        android:layout_width="@dimen/thumbnail_width"
+        android:layout_height="@dimen/thumbnail_height"
         android:src="@mipmap/ic_launcher"
+        android:scaleType="fitXY"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -49,21 +50,23 @@
         android:textColor="@color/colorAccentWithOpacity"
         android:textSize="@dimen/text_size_medium"
         android:fontFamily="sans-serif-regular"
-        app:layout_constraintLeft_toRightOf="@id/tv_size"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_size"
+        app:layout_constraintLeft_toRightOf="@id/iv_thumbnail"
         android:layout_marginLeft="@dimen/margin_medium"/>
 
     <TextView
         android:id="@+id/tv_duration"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Duration 01 : 15 : 44 "
-        android:textColor="@color/colorAccentWithOpacity"
+        tools:text="01 : 15"
+        android:textColor="@color/colorDurationText"
         android:textSize="@dimen/text_size_medium"
         android:fontFamily="sans-serif-regular"
-        app:layout_constraintLeft_toRightOf="@id/iv_thumbnail"
-        app:layout_constraintTop_toBottomOf="@id/tv_format"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="@dimen/margin_medium"/>
+        android:background="@color/colorDurationBg"
+        android:padding="@dimen/padding_duration_text"
+        app:layout_constraintRight_toRightOf="@id/iv_thumbnail"
+        android:layout_marginRight="@dimen/margin_small"
+        app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+        android:layout_marginBottom="@dimen/margin_small"/>
 
 </android.support.constraint.ConstraintLayout>
