@@ -1,6 +1,7 @@
 package com.player.video.grapefruitvideoplayer;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>{
@@ -18,6 +24,7 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
 
     public VideoListAdapter(Context context) {
         this.context = context;
+        videoModels = new ArrayList<>();
     }
 
     @NonNull
@@ -65,7 +72,11 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
         }
 
         public void bindDataToView(VideoModel model){
-            //Thumbnail shoild set with glide.
+            //Thumbnail should set with glide.
+            Glide.with(context).load(Uri.fromFile(new File(model.getFilePath())))
+                    .apply(model.getRequestOption())
+                    .into(thumbnailImageView);
+
             sizeTextView.setText(model.getFileSize());
             formatTextView.setText(model.getFormat());
             durationTextView.setText(model.getDuration());
