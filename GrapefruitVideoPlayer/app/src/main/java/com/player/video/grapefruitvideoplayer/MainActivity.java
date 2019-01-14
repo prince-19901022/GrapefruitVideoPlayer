@@ -1,15 +1,12 @@
 package com.player.video.grapefruitvideoplayer;
 
 
-import android.content.res.Configuration;
+
 import android.database.Cursor;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -19,7 +16,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             MediaStore.Video.Media.DURATION, // duration in millisecond
             MediaStore.Video.Media.TITLE, // Title of the file
             MediaStore.Video.Media.SIZE, //Size of the file in bytes
-            MediaStore.Video.Media.DISPLAY_NAME //Title of the file with type extension
+            MediaStore.Video.Media.DISPLAY_NAME, //Title of the file with type extension
+            MediaStore.Video.Media._ID
     };
 
     @Override
@@ -52,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setTitle(R.string.main_act_label);
 
         getSupportLoaderManager().initLoader(LOADER_ID,null, this);
         initViews();
@@ -84,10 +83,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             model.setFilePath(data.getString(0));
             model.setFileSizeInBytes(data.getLong(3));
             model.setDisplayName(data.getString(4));
+            Log.d(LOG_TAG,"_ID : "+data.getLong(5));
             list.add(model);
             data.moveToNext();
         }
         vlAdapter.addData(list);
+
     }
 
     @Override
