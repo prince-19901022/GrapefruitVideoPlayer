@@ -6,14 +6,17 @@ package com.player.video.grapefruitvideoplayer;
 
  // Thunmbnail loading will be done later.
 
+import com.bumptech.glide.request.RequestOptions;
+
 public class VideoModel {
 
     private String filePath;
-    //private String thumbnailPath;
     private String title;
     private long fileSizeInBytes;
     private long durationInMilliSecond;
     private String displayName; //It Will contain the file type
+    //The micro second of which frame is intended to be used as thumbnail.
+    private long frameTimeInMicrosecond = 6000000;
 
     public String getFilePath() {
         return filePath;
@@ -22,14 +25,6 @@ public class VideoModel {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
-
-//    public String getThumbnailPath() {
-//        return thumbnailPath;
-//    }
-//
-//    public void setThumbnailPath(String thumbnailPath) {
-//        this.thumbnailPath = thumbnailPath;
-//    }
 
     public String getTitle() {
         return title;
@@ -56,7 +51,11 @@ public class VideoModel {
         minute = minute/60000;
         long second = minute % 60000;
         second = second / 1000;
-        return String.format("Duration %02d : %02d : %02d", hour, minute, second);
+
+        if(hour == 0){
+            return String.format("%02d : %02d", minute, second);
+        }
+        return String.format("%02d : %02d : %02d", hour, minute, second);
     }
 
     public void setDurationInMilliSecond(long durationInMilliSecond) {
@@ -64,10 +63,18 @@ public class VideoModel {
     }
 
     public String getFormat(){
-        return "Type of file "+displayName.substring(displayName.lastIndexOf("."));
+        return "Type "+displayName.substring(displayName.lastIndexOf("."));
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void setFrameTimeInMicrosecond(long frameTimeInMicrosecond) {
+        this.frameTimeInMicrosecond = frameTimeInMicrosecond;
+    }
+
+    public RequestOptions getRequestOption(){
+        return new RequestOptions().frame(frameTimeInMicrosecond);
     }
 }
