@@ -17,8 +17,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.player.video.grapefruitvideoplayer.database.Thumbnail;
+import com.player.video.grapefruitvideoplayer.database.ThumbnailDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /*
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             model.setFilePath(data.getString(0));
             model.setFileSizeInBytes(data.getLong(3));
             model.setDisplayName(data.getString(4));
-            Log.d(LOG_TAG,"_ID : "+data.getLong(5));
+            model.setVideoId(data.getLong(5));
             list.add(model);
             data.moveToNext();
         }

@@ -18,6 +18,8 @@ public class VideoModel {
     //The micro second of which frame is intended to be used as thumbnail.
     private long frameTimeInMicrosecond = 6000000;
 
+    private long videoId;
+
     public String getFilePath() {
         return filePath;
     }
@@ -76,5 +78,13 @@ public class VideoModel {
 
     public RequestOptions getRequestOption(){
         return new RequestOptions().frame(frameTimeInMicrosecond);
+    }
+
+    public long getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(long videoId) {
+        this.videoId = videoId;
     }
 }
