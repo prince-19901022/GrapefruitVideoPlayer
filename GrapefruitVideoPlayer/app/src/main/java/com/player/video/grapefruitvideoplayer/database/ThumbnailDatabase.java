@@ -12,11 +12,11 @@ public abstract class ThumbnailDatabase extends RoomDatabase {
     private static final Object LOCK = new Object();
     private static ThumbnailDatabase sInstance;
 
-    public static ThumbnailDatabase getsInstance(Context context) {
+    public static ThumbnailDatabase getInstance(Context appContext) {
 
         if (sInstance == null) {
             synchronized (LOCK){
-                sInstance = Room.databaseBuilder(context.getApplicationContext(),
+                sInstance = Room.databaseBuilder(appContext,
                         ThumbnailDatabase.class,
                         ThumbnailDatabase.DATABASE_NAME)
                         .allowMainThreadQueries()
