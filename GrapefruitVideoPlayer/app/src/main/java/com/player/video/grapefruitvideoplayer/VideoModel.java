@@ -60,6 +60,10 @@ public class VideoModel {
         return String.format("%02d : %02d : %02d", hour, minute, second);
     }
 
+    public long getDurationInMilliSecond(){
+        return durationInMilliSecond;
+    }
+
     public void setDurationInMilliSecond(long durationInMilliSecond) {
         this.durationInMilliSecond = durationInMilliSecond;
     }
