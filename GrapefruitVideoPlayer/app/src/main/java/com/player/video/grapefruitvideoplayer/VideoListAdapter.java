@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,9 +21,11 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
 
     private Context context;
     private List<VideoModel> videoModels;
+    private VideoItemClickListener videoItemClickListener;
 
     public VideoListAdapter(Context context) {
         this.context = context;
+        this.videoItemClickListener = (VideoItemClickListener) context;
         videoModels = new ArrayList<>();
     }
 
@@ -51,7 +54,7 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
         notifyDataSetChanged();
     }
 
-    class VideoViewHolder extends RecyclerView.ViewHolder{
+    class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView thumbnailImageView;
         private TextView titleTextView;
@@ -68,6 +71,8 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
             formatTextView =itemView.findViewById(R.id.tv_format);
             durationTextView =itemView.findViewById(R.id.tv_duration);
             titleTextView =itemView.findViewById(R.id.tv_title);
+
+            itemView.setOnClickListener(this);
         }
 
         public void bindDataToView(VideoModel model){
@@ -80,6 +85,14 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
             formatTextView.setText(model.getFormat());
             durationTextView.setText(model.getDuration());
             titleTextView.setText(model.getTitle());
+        }
+
+        @Override
+        public void onClick(View v) {
+            videoItemClickListener.onVideoItemClick(getAdapterPosition(),
+                    videoModels.get(getAdapterPosition()).getFilePath(),
+                    videoModels.get(getAdapterPosition()).getDurationInMilliSecond(),
+                    videoModels.get(getAdapterPosition()).getTitle());
         }
     }
 }

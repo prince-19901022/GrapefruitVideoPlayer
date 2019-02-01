@@ -4,22 +4,28 @@ package com.player.video.grapefruitvideoplayer;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.player.video.grapefruitvideoplayer.task.GPlayerViewModel;
 import com.player.video.grapefruitvideoplayer.task.LoadingTask;
+import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements VideoItemClickListener {
 
     private static final String LOG_TAG = "www.d.com";
+
+    public static final String LIST_INDEX = "list_index";
+    public static final String PATH = "path";
+    public static final String DURATION = "duration";
+    public static final String DISPLAY_NAME= "display_name";
 
     private RecyclerView videoList;
     private VideoListAdapter vlAdapter;
@@ -66,7 +72,19 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(LOG_TAG,"Activity Stopped");
         getContentResolver().unregisterContentObserver(contentObserver);
+    }
+
+    @Override
+    public void onVideoItemClick(int listIndex, String path, long duration, String displayName) {
+
+        Intent playerIntent = new Intent(this, VideoPlayerActivity.class);
+        playerIntent.putExtra(LIST_INDEX,listIndex);
+        playerIntent.putExtra(PATH,path);
+        playerIntent.putExtra(DURATION,duration);
+        playerIntent.putExtra(DISPLAY_NAME,displayName);
+
+        startActivity(playerIntent);
+
     }
 }
