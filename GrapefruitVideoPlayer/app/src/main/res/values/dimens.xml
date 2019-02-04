@@ -12,4 +12,7 @@
     <dimen name="text_size_large">16sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="padding_duration_text">2dp</dimen>
+    <dimen name="touch_target_padding_portrait">24dp</dimen>
+    <dimen name="margin_forward_rewind">12dp</dimen>
+    <dimen name="btn_size_play">64dp</dimen>
 </resources>

@@ -122,7 +122,7 @@
     </FrameLayout>
 
     <android.support.v7.widget.AppCompatSeekBar
-        android:id="@+id/seek_bar"
+        android:id="@+id/seek_bar_portrait"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:thumbTint="@color/progress_color"

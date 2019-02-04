@@ -1,18 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPlayerBg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VideoPlayerActivity">
 
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="#1F20E7"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="16dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageButton
+        android:id="@+id/btn_prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_skip_previous_black_24dp"
+        android:padding="@dimen/touch_target_padding_portrait"
+        android:background="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/videoView"/>
+
+    <ImageButton
+        android:id="@+id/btn_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_skip_next_black_24dp"
+        android:padding="@dimen/touch_target_padding_portrait"
+        android:background="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/videoView"/>
+
+    <TextView
+        android:id="@+id/tv_progress_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00 : 00"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-regular"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_marginLeft="@dimen/margin_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintBottom_toBottomOf="@id/seek_bar_portrait"/>
+    
+    <TextView
+        android:id="@+id/tv_total_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00 : 00"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-regular"
+        android:textSize="@dimen/text_size_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="@dimen/margin_small"
+        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintBottom_toBottomOf="@id/seek_bar_portrait"/>
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/seek_bar_portrait"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:thumbTint="@color/progress_color"
+        android:progressTint="@color/progress_color"
+        android:padding="@dimen/margin_small"
+        app:layout_constraintLeft_toRightOf="@id/tv_progress_time"
+        app:layout_constraintRight_toLeftOf="@id/tv_total_progress"
+        app:layout_constraintTop_toBottomOf="@id/videoView"/>
+    
+    <ImageButton
+        android:id="@+id/btn_fast_rewind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_rewind_portrait"
+        android:background="@null"
+        android:paddingLeft="@dimen/touch_target_padding_portrait"
+        android:paddingRight="@dimen/touch_target_padding_portrait"
+        android:paddingTop="@dimen/touch_target_padding"
+        android:paddingBottom="@dimen/touch_target_padding"
+        android:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar_portrait"/>
+
+
+    <ImageButton
+        android:id="@+id/btn_fast_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_forward_portrait"
+        android:background="@null"
+        android:paddingLeft="@dimen/touch_target_padding_portrait"
+        android:paddingRight="@dimen/touch_target_padding_portrait"
+        android:paddingTop="@dimen/touch_target_padding"
+        android:paddingBottom="@dimen/touch_target_padding"
+        android:tint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar_portrait"/>
+
+    <ImageButton
+        android:id="@+id/btn_play_pause"
+        android:layout_width="@dimen/btn_size_play"
+        android:layout_height="@dimen/btn_size_play"
+        android:src="@drawable/ic_play"
+        android:scaleType="centerCrop"
+        android:background="@null"
+        app:layout_constraintStart_toEndOf="@id/btn_fast_rewind"
+        app:layout_constraintEnd_toStartOf="@id/btn_fast_forward"
+        app:layout_constraintTop_toBottomOf="@id/seek_bar_portrait"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </android.support.constraint.ConstraintLayout>
