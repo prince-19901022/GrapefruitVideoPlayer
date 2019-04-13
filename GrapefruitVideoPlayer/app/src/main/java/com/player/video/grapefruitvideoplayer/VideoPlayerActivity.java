@@ -1,6 +1,6 @@
 package com.player.video.grapefruitvideoplayer;
 
-import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,12 +8,24 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
+
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 public class VideoPlayerActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,7 +34,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private long duration;
     private String displayName;
 
-    private VideoView videoView;
     private ImageButton nextImageButton;
     private ImageButton previousImageButton;
     private ImageButton fastForwardImageButton;
@@ -32,9 +43,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private TextView totalProgressTimeTextView;
     private AppCompatSeekBar seekBar;
 
-    private MediaPlayer mMediaPlayer;
+    private SimpleExoPlayer sePlayer;
+    private PlayerView playerView;
 
-    private int seekBy = 5000; //time in millisecond
+    private long seekBy = 5000; //time in millisecond
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +61,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         displayName = getIntent().getExtras().getString(MainActivity.DISPLAY_NAME);
 
         getSupportActionBar().setTitle(displayName);
-
         initViews();
     }
 
@@ -79,21 +90,21 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initViews(){
-        videoView = findViewById(R.id.videoView);
 
+        playerView = findViewById(R.id.playerView);
         nextImageButton = findViewById(R.id.btn_next);
         previousImageButton = findViewById(R.id.btn_prev);
-        
+
         fastForwardImageButton = findViewById(R.id.btn_fast_forward);
         fastRewindImageButton = findViewById(R.id.btn_fast_rewind);
-        
+
         playPauseImageButton = findViewById(R.id.btn_play_pause);
-        
+
         seekBar = findViewById(R.id.seek_bar_portrait);
-        
+
         progressTimeTextView = findViewById(R.id.tv_progress_time);
         totalProgressTimeTextView = findViewById(R.id.tv_total_progress);
-        
+
         nextImageButton.setOnClickListener(this);
 
         previousImageButton.setOnClickListener(this);
@@ -101,28 +112,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         fastRewindImageButton.setOnClickListener(this);
         playPauseImageButton.setOnClickListener(this);
 
-        videoView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                handlePlayPause();
-                return false;
-            }
-        });
 
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mMediaPlayer = mp;
-                seekBar.setMax(mMediaPlayer.getDuration());
-            }
-        });
-
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                videoView.stopPlayback();
-            }
-        });
     }
 
     @Override
@@ -137,42 +127,62 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void seekWith(int mulFactor) {
-        //Fast forwarding by 5s.
-        //Not Working
-        if(mMediaPlayer != null){
-           handlePlayPause();
-            int msToSeek = videoView.getCurrentPosition() + (mulFactor * seekBy);
-            if(msToSeek >= 0 && msToSeek <= mMediaPlayer.getDuration()){
 
-                //seekBar.setProgress(msToSeek);
-                videoView.seekTo(msToSeek);
-            }
-        }
+        sePlayer.seekTo(sePlayer.getCurrentPosition()+seekBy);
+
     }
 
     private void handlePlayPause() {
-        //If videoView is in playing, then it can be assumed that media player object is not null
-        //Here mediaPlayer object is used directly because videoView resume method do not work.
-        if(videoView.isPlaying()){
-            mMediaPlayer.pause();
+
+        if(sePlayer.getPlayWhenReady()){
+            //Media is already playing. So, pause it
+            sePlayer.setPlayWhenReady(false);
             playPauseImageButton.setImageResource(R.drawable.ic_pause);
         }else{
-            mMediaPlayer.start();
+            //Media is in paused state. So resume playing.
+            sePlayer.setPlayWhenReady(true);
             playPauseImageButton.setImageResource(R.drawable.ic_play);
         }
+    }
+
+    private void initPlayer(){
+
+        playerView.requestFocus();
+
+        sePlayer = ExoPlayerFactory.newSimpleInstance(this,new DefaultTrackSelector());
+        playerView.setPlayer(sePlayer);
+        sePlayer.setPlayWhenReady(true);
+        sePlayer.seekTo(0,0);
+
+        MediaSource mediaSource = buildMediaSource(Uri.parse(path));
+        sePlayer.prepare(mediaSource,true,false);
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(this,
+                Util.getUserAgent(this,getString(R.string.app_name)))).
+                createMediaSource(uri);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if (Util.SDK_INT > 23) {
+            initPlayer();
+        }
+    }
 
-        videoView.setVideoPath(path);
-        videoView.start();
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if ((Util.SDK_INT <= 23 || sePlayer == null)) {
+            initPlayer();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        videoView.stopPlayback();
     }
 }
