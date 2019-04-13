@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--This file is required to tell exo player that 'please don't'-->
+    <!--use your default playback control, because i will handle it my way'.-->
+</android.support.constraint.ConstraintLayout>
