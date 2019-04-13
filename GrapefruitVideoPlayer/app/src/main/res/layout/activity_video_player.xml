@@ -8,8 +8,8 @@
     android:layout_height="match_parent"
     tools:context=".VideoPlayerActivity">
 
-    <VideoView
-        android:id="@+id/videoView"
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/playerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="4:3"
@@ -27,7 +27,7 @@
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/videoView"/>
+        app:layout_constraintBottom_toTopOf="@id/playerView"/>
 
     <ImageButton
         android:id="@+id/btn_next"
@@ -38,7 +38,7 @@
         android:background="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/videoView"/>
+        app:layout_constraintBottom_toTopOf="@id/playerView"/>
 
     <TextView
         android:id="@+id/tv_progress_time"
@@ -50,9 +50,9 @@
         android:textSize="@dimen/text_size_medium"
         android:layout_marginLeft="@dimen/margin_small"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintTop_toBottomOf="@id/playerView"
         app:layout_constraintBottom_toBottomOf="@id/seek_bar_portrait"/>
-    
+
     <TextView
         android:id="@+id/tv_total_progress"
         android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="@dimen/margin_small"
-        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintTop_toBottomOf="@id/playerView"
         app:layout_constraintBottom_toBottomOf="@id/seek_bar_portrait"/>
 
     <android.support.v7.widget.AppCompatSeekBar
@@ -75,8 +75,8 @@
         android:padding="@dimen/margin_small"
         app:layout_constraintLeft_toRightOf="@id/tv_progress_time"
         app:layout_constraintRight_toLeftOf="@id/tv_total_progress"
-        app:layout_constraintTop_toBottomOf="@id/videoView"/>
-    
+        app:layout_constraintTop_toBottomOf="@id/playerView"/>
+
     <ImageButton
         android:id="@+id/btn_fast_rewind"
         android:layout_width="wrap_content"
