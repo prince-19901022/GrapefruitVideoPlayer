@@ -5,6 +5,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +34,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private ImageButton fastForwardImageButton;
     private ImageButton fastRewindImageButton;
     private ImageButton playPauseImageButton;
-    private TextView progressTimeTextView;
+    private TextView durationProgressedTextView;
     private TextView totalDurationTextView;
     private AppCompatSeekBar seekBar;
 
@@ -96,7 +97,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
         seekBar = findViewById(R.id.seek_bar_portrait);
 
-        progressTimeTextView = findViewById(R.id.tv_progress_time);
+        durationProgressedTextView = findViewById(R.id.tv_progress_time);
 
         totalDurationTextView = findViewById(R.id.tv_total_progress);
         totalDurationTextView.setText(GPlayerUtil.formatDuration(duration));
@@ -122,9 +123,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void seekWith(int mulFactor) {
-
         sePlayer.seekTo(sePlayer.getCurrentPosition()+seekBy);
-
     }
 
     private void handlePlayPause() {
@@ -160,6 +159,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 createMediaSource(uri);
     }
 
+    private void releasePlayer(){
+        if(sePlayer != null){
+            sePlayer.stop();
+            sePlayer.release();
+            sePlayer = null;
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -178,7 +185,20 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(Util.SDK_INT <= 23){
+            releasePlayer();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+
+        if(Util.SDK_INT > 23){
+            releasePlayer();
+        }
     }
 }
