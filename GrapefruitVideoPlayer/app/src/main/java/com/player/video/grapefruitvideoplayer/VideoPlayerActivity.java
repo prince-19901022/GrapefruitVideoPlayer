@@ -5,7 +5,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,18 +12,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 public class VideoPlayerActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,7 +34,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private ImageButton fastRewindImageButton;
     private ImageButton playPauseImageButton;
     private TextView progressTimeTextView;
-    private TextView totalProgressTimeTextView;
+    private TextView totalDurationTextView;
     private AppCompatSeekBar seekBar;
 
     private SimpleExoPlayer sePlayer;
@@ -103,7 +97,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         seekBar = findViewById(R.id.seek_bar_portrait);
 
         progressTimeTextView = findViewById(R.id.tv_progress_time);
-        totalProgressTimeTextView = findViewById(R.id.tv_total_progress);
+
+        totalDurationTextView = findViewById(R.id.tv_total_progress);
+        totalDurationTextView.setText(GPlayerUtil.formatDuration(duration));
 
         nextImageButton.setOnClickListener(this);
 
@@ -111,7 +107,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         fastForwardImageButton.setOnClickListener(this);
         fastRewindImageButton.setOnClickListener(this);
         playPauseImageButton.setOnClickListener(this);
-
 
     }
 
@@ -154,6 +149,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         sePlayer.setPlayWhenReady(true);
         sePlayer.seekTo(0,0);
 
+        sePlayer.addListener(new GPlayerEventListener());
         MediaSource mediaSource = buildMediaSource(Uri.parse(path));
         sePlayer.prepare(mediaSource,true,false);
     }

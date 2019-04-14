@@ -83,7 +83,7 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
 
             sizeTextView.setText(model.getFileSize());
             formatTextView.setText(model.getFormat());
-            durationTextView.setText(model.getDuration());
+            durationTextView.setText(GPlayerUtil.formatDuration(model.getDurationInMilliSecond()));
             titleTextView.setText(model.getTitle());
         }
 
