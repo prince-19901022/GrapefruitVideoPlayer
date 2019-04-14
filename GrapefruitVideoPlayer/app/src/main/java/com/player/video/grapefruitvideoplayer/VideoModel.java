@@ -45,21 +45,6 @@ public class VideoModel {
         this.fileSizeInBytes = fileSizeInBytes;
     }
 
-    public String getDuration() {
-        //milliSecondInAnHour = 60 * 60 * 1000 = 36 00 000
-        long hour = durationInMilliSecond / 3600000;
-        long minute = durationInMilliSecond % 3600000;
-        //millisecondInA?Minute = 60,000
-        minute = minute/60000;
-        long second = minute % 60000;
-        second = second / 1000;
-
-        if(hour == 0){
-            return String.format("%02d : %02d", minute, second);
-        }
-        return String.format("%02d : %02d : %02d", hour, minute, second);
-    }
-
     public long getDurationInMilliSecond(){
         return durationInMilliSecond;
     }
