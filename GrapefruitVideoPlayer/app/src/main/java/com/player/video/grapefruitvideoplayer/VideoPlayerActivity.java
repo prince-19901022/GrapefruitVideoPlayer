@@ -5,7 +5,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,9 +33,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private ImageButton fastForwardImageButton;
     private ImageButton fastRewindImageButton;
     private ImageButton playPauseImageButton;
-    private TextView durationProgressedTextView;
     private TextView totalDurationTextView;
-    private AppCompatSeekBar seekBar;
+
+    /*Declaring 'GPlayerEventListener' globally and instantiating inside initViews will save me from
+    * repetitive instantiation of  'GPlayerEventListener', 'seekbar' and 'textview' object during
+    * each initialization of player, specially on next and previous event click*/
+    private GPlayerEventListener gpeListener;
 
     private SimpleExoPlayer sePlayer;
     private PlayerView playerView;
@@ -95,12 +97,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
         playPauseImageButton = findViewById(R.id.btn_play_pause);
 
-        seekBar = findViewById(R.id.seek_bar_portrait);
-
-        durationProgressedTextView = findViewById(R.id.tv_progress_time);
+        gpeListener = new GPlayerEventListener((AppCompatSeekBar)findViewById(R.id.seek_bar_portrait),
+                (TextView) findViewById(R.id.tv_progress_time));
 
         totalDurationTextView = findViewById(R.id.tv_total_progress);
-        totalDurationTextView.setText(GPlayerUtil.formatDuration(duration));
 
         nextImageButton.setOnClickListener(this);
 
@@ -147,8 +147,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         playerView.setPlayer(sePlayer);
         sePlayer.setPlayWhenReady(true);
         sePlayer.seekTo(0,0);
+        /* As player will be initialized before playing each video and total duration text view
+           should be updated for each video so, this is appropriate scope to update total duration
+           text view.*/
+        totalDurationTextView.setText(GPlayerUtil.formatDuration(duration));
+        gpeListener.setPlayer(sePlayer);
 
-        sePlayer.addListener(new GPlayerEventListener());
+        sePlayer.addListener(gpeListener);
+
         MediaSource mediaSource = buildMediaSource(Uri.parse(path));
         sePlayer.prepare(mediaSource,true,false);
     }
@@ -178,7 +184,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
-
         if ((Util.SDK_INT <= 23 || sePlayer == null)) {
             initPlayer();
         }
