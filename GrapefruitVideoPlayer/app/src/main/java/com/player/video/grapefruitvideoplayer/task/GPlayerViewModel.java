@@ -3,10 +3,9 @@ package com.player.video.grapefruitvideoplayer.task;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 
-import com.player.video.grapefruitvideoplayer.VideoModel;
+import com.player.video.grapefruitvideoplayer.util.VideoModel;
 
 import java.util.List;
 

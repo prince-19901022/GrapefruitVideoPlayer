@@ -1,4 +1,4 @@
-package com.player.video.grapefruitvideoplayer;
+package com.player.video.grapefruitvideoplayer.util;
 
 /*
 * List all video or audio file :- https://stackoverflow.com/questions/39461954/list-all-mp3-files-in-android

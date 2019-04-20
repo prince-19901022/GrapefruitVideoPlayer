@@ -37,12 +37,5 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$arch_version"
     annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
-    //Attempting to test another version of exo player.
-//    implementation 'com.google.android.exoplayer:exoplayer-core:2.7.3'
-//    implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.3'
-
-
-
     testImplementation 'junit:junit:4.12'
 }

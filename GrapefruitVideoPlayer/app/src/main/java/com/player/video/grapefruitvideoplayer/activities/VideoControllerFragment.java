@@ -1,4 +1,4 @@
-package com.player.video.grapefruitvideoplayer;
+package com.player.video.grapefruitvideoplayer.activities;
 
 
 import android.content.res.Configuration;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.player.video.grapefruitvideoplayer.R;
 
 
 /**

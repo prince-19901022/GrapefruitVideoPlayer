@@ -1,4 +1,4 @@
-package com.player.video.grapefruitvideoplayer;
+package com.player.video.grapefruitvideoplayer.activities;
 
 
 
@@ -12,15 +12,17 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.player.video.grapefruitvideoplayer.R;
 import com.player.video.grapefruitvideoplayer.task.GPlayerViewModel;
 import com.player.video.grapefruitvideoplayer.task.LoadingTask;
 import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
+import com.player.video.grapefruitvideoplayer.util.GPlayerObserver;
+import com.player.video.grapefruitvideoplayer.util.VideoListAdapter;
+import com.player.video.grapefruitvideoplayer.util.VideoModel;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements VideoItemClickListener {
-
-    private static final String LOG_TAG = "www.d.com";
 
     public static final String LIST_INDEX = "list_index";
     public static final String PATH = "path";

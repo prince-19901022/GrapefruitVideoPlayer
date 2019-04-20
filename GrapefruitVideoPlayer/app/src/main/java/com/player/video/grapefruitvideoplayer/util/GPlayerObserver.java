@@ -1,4 +1,4 @@
-package com.player.video.grapefruitvideoplayer;
+package com.player.video.grapefruitvideoplayer.util;
 
 import android.app.Application;
 import android.database.ContentObserver;

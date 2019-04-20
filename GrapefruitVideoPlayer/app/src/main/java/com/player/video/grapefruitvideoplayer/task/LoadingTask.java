@@ -1,14 +1,12 @@
 package com.player.video.grapefruitvideoplayer.task;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.content.ContentResolverCompat;
 import android.util.Log;
 
-import com.player.video.grapefruitvideoplayer.VideoModel;
+import com.player.video.grapefruitvideoplayer.util.VideoModel;
 import com.player.video.grapefruitvideoplayer.database.Thumbnail;
 import com.player.video.grapefruitvideoplayer.database.ThumbnailDatabase;
 

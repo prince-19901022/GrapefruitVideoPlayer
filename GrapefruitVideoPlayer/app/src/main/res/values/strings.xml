@@ -4,4 +4,8 @@
     <string name="main_act_label">Available Video</string>
     <string name="app_name_alias">G Player</string>
     <string name="select">Select As Thumbnail</string>
+    <string name="dialog_title">Seek by</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="seek_time_id">SELECTED_SEEK_TIME_ID</string>
 </resources>

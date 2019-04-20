@@ -1,4 +1,4 @@
-package com.player.video.grapefruitvideoplayer;
+package com.player.video.grapefruitvideoplayer.util;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.player.video.grapefruitvideoplayer.R;
 import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
 
 import java.io.File;
