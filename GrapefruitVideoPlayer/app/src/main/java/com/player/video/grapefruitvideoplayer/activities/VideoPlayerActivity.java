@@ -7,6 +7,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -157,11 +158,28 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.btn_next:
                 GPlayerUtil.showParticleAnimationOn(nextImageButton, this);
+                listIndex = (listIndex + 1) == SharedDataSource.getInstance().dataSourceSize() ?
+                        0 : (listIndex + 1);
+                changeCurrentVideo();
                 break;
 
             case R.id.btn_prev:
                 GPlayerUtil.showParticleAnimationOn(previousImageButton, this);
+                listIndex = (listIndex - 1) < 0 ?
+                        SharedDataSource.getInstance().dataSourceSize() - 1 :
+                        (listIndex - 1);
+                changeCurrentVideo();
                 break;
+        }
+    }
+
+    private void changeCurrentVideo(){
+        getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
+        try {
+            playerManager.changeVideoTo(listIndex);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Unable to play this video", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -172,6 +190,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }else{
             playPauseImageButton.setImageResource(R.drawable.ic_play);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*TODO: You have to re-init media player here. In Order to avoid NPE which occurs activity gets back
+        * from onPause to onResume*/
     }
 
     @Override

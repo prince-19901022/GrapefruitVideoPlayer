@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.view.SurfaceHolder;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.player.video.grapefruitvideoplayer.callbacks.OnPlayerReadyListener;
 
@@ -46,6 +47,13 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
         player.setOnPreparedListener(this);
         player.prepare();
     }
+
+    private void initPlayer(String path) throws IOException {
+        player.setDataSource(path);
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setOnPreparedListener(this);
+        player.prepare();
+    }
     
     public void releasePlayer(){
         if(player != null){
@@ -75,6 +83,16 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
     public void handleFastRewind(int rewindBy){
         int newPos = player.getCurrentPosition() - rewindBy;
         player.seekTo(newPos < 0? 0 : newPos);
+    }
+
+    public void changeVideoTo(int listIndex) throws IOException {
+        progressHandler.removeCallbacks(updateProgress);
+        seekBar.setProgress(0);
+        durationProgressedTextView.setText("00:00");
+
+        player.stop();
+        player.reset();
+        initPlayer(SharedDataSource.getInstance().get(listIndex).getFilePath());
     }
 
     @Override
