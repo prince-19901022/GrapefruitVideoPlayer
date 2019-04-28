@@ -8,4 +8,5 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="seek_time_id">SELECTED_SEEK_TIME_ID</string>
+    <string name="list_index">LIST_INDEX</string>
 </resources>

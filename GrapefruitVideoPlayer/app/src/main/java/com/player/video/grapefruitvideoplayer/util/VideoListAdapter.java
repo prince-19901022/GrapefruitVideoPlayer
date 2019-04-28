@@ -21,13 +21,11 @@ import java.util.List;
 public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>{
 
     private Context context;
-    private List<VideoModel> videoModels;
     private VideoItemClickListener videoItemClickListener;
 
     public VideoListAdapter(Context context) {
         this.context = context;
         this.videoItemClickListener = (VideoItemClickListener) context;
-        videoModels = new ArrayList<>();
     }
 
     @NonNull
@@ -42,17 +40,12 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
 
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
-        holder.bindDataToView(videoModels.get(position));
+        holder.bindDataToView(SharedDataSource.getInstance().get(position));
     }
 
     @Override
     public int getItemCount() {
-        return videoModels.size();
-    }
-
-    public void addData(List<VideoModel> videoModels){
-        this.videoModels = videoModels;
-        notifyDataSetChanged();
+        return SharedDataSource.getInstance().dataSourceSize();
     }
 
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -90,10 +83,7 @@ public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.Vid
 
         @Override
         public void onClick(View v) {
-            videoItemClickListener.onVideoItemClick(getAdapterPosition(),
-                    videoModels.get(getAdapterPosition()).getFilePath(),
-                    videoModels.get(getAdapterPosition()).getDurationInMilliSecond(),
-                    videoModels.get(getAdapterPosition()).getTitle());
+            videoItemClickListener.onVideoItemClick(getAdapterPosition());
         }
     }
 }

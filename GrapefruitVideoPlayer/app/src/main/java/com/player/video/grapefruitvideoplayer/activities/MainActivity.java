@@ -17,17 +17,13 @@ import com.player.video.grapefruitvideoplayer.task.GPlayerViewModel;
 import com.player.video.grapefruitvideoplayer.task.LoadingTask;
 import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
 import com.player.video.grapefruitvideoplayer.util.GPlayerObserver;
+import com.player.video.grapefruitvideoplayer.util.SharedDataSource;
 import com.player.video.grapefruitvideoplayer.util.VideoListAdapter;
 import com.player.video.grapefruitvideoplayer.util.VideoModel;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements VideoItemClickListener {
-
-    public static final String LIST_INDEX = "list_index";
-    public static final String PATH = "path";
-    public static final String DURATION = "duration";
-    public static final String DISPLAY_NAME= "display_name";
 
     private RecyclerView videoList;
     private VideoListAdapter vlAdapter;
@@ -49,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements VideoItemClickLis
         viewModel.getLiveData().observe(this, new Observer<List<VideoModel>>() {
             @Override
             public void onChanged(@Nullable List<VideoModel> videoModels) {
-                vlAdapter.addData(videoModels);
+                SharedDataSource.getInstance().setDataSource(videoModels);
+                vlAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -78,15 +75,9 @@ public class MainActivity extends AppCompatActivity implements VideoItemClickLis
     }
 
     @Override
-    public void onVideoItemClick(int listIndex, String path, long duration, String displayName) {
-
+    public void onVideoItemClick(int listIndex) {
         Intent playerIntent = new Intent(this, VideoPlayerActivity.class);
-        playerIntent.putExtra(LIST_INDEX,listIndex);
-        playerIntent.putExtra(PATH,path);
-        playerIntent.putExtra(DURATION,duration);
-        playerIntent.putExtra(DISPLAY_NAME,displayName);
-
+        playerIntent.putExtra(getString(R.string.list_index),listIndex);
         startActivity(playerIntent);
-
     }
 }

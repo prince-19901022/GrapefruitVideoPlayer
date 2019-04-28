@@ -21,15 +21,13 @@ import com.player.video.grapefruitvideoplayer.callbacks.OnPlayerReadyListener;
 import com.player.video.grapefruitvideoplayer.callbacks.SeekTimeSelectionListener;
 import com.player.video.grapefruitvideoplayer.util.PlayerManager;
 import com.player.video.grapefruitvideoplayer.util.GPlayerUtil;
+import com.player.video.grapefruitvideoplayer.util.SharedDataSource;
 
 import java.io.IOException;
 
 public class VideoPlayerActivity extends AppCompatActivity implements View.OnClickListener, 
         SurfaceHolder.Callback,
         OnPlayerReadyListener {
-
-    /*To get current index
-    * listIndex = getIntent().getExtras().getInt(MainActivity.LIST_INDEX);*/
 
     private ImageButton nextImageButton;
     private ImageButton previousImageButton;
@@ -41,6 +39,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private PlayerManager playerManager;
 
     private int seekBy;
+    private int listIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle(getIntent().getExtras().getString(MainActivity.DISPLAY_NAME));
+        listIndex= getIntent().getExtras().getInt(getString(R.string.list_index));
+
+        getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
         initialise();
         disablePlayerControls();
     }
@@ -100,10 +101,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         playPauseImageButton = findViewById(R.id.btn_play_pause);
 
         final TextView totalDurationTextView = findViewById(R.id.tv_total_progress);
-        totalDurationTextView.setText(GPlayerUtil.formatDuration(
-                        getIntent().
-                        getExtras().
-                        getLong(MainActivity.DURATION)));
+        totalDurationTextView.setText(GPlayerUtil.formatDuration(SharedDataSource.getInstance().
+                get(listIndex).
+                getDurationInMilliSecond()));
 
         surfaceView.getHolder().addCallback(this);
 
@@ -174,7 +174,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try{
-            playerManager.initPlayer(holder, getIntent().getExtras().getString(MainActivity.PATH));
+            playerManager.initPlayer(holder, SharedDataSource.getInstance().get(listIndex).getFilePath());
         }catch(IOException ex){
             ex.printStackTrace();
         }
