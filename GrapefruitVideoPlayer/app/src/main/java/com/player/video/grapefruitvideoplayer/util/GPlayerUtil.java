@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
 
+import com.plattysoft.leonids.ParticleSystem;
 import com.player.video.grapefruitvideoplayer.R;
 import com.player.video.grapefruitvideoplayer.callbacks.SeekTimeSelectionListener;
 
@@ -59,5 +61,11 @@ public class GPlayerUtil {
         });
 
         alertBuilder.create().show();
+    }
+
+    public static void showParticleAnimationOn(View view, Activity activity){
+        ParticleSystem ps= new ParticleSystem(activity, 100, R.drawable.star_pink,550);
+        ps.setSpeedRange(0.1f, 0.25f);
+        ps.oneShot(view, 100);
     }
 }

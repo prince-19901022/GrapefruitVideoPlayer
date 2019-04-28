@@ -140,9 +140,28 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
 
         switch(v.getId()){
-            case R.id.btn_play_pause : onClickPlayPause();break;
-            case R.id.btn_fast_forward : playerManager.handleFastForward(seekBy);break;
-            case R.id.btn_fast_rewind : playerManager.handleFastRewind(seekBy);break;
+            case R.id.btn_play_pause :
+                GPlayerUtil.showParticleAnimationOn(playPauseImageButton, this);
+                onClickPlayPause();
+                break;
+
+            case R.id.btn_fast_forward :
+                GPlayerUtil.showParticleAnimationOn(fastForwardImageButton, this);
+                playerManager.handleFastForward(seekBy);
+                break;
+
+            case R.id.btn_fast_rewind :
+                GPlayerUtil.showParticleAnimationOn(fastRewindImageButton, this);
+                playerManager.handleFastRewind(seekBy);
+                break;
+
+            case R.id.btn_next:
+                GPlayerUtil.showParticleAnimationOn(nextImageButton, this);
+                break;
+
+            case R.id.btn_prev:
+                GPlayerUtil.showParticleAnimationOn(previousImageButton, this);
+                break;
         }
     }
 

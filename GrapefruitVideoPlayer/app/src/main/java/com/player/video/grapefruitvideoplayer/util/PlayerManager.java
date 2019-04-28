@@ -1,5 +1,6 @@
 package com.player.video.grapefruitvideoplayer.util;
 
+import android.app.Activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -91,11 +92,13 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         progressHandler.removeCallbacks(updateProgress);
+        GPlayerUtil.showParticleAnimationOn(seekBar, (Activity) readyListener);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         player.seekTo(seekBar.getProgress());
         progressHandler.post(updateProgress);
+        GPlayerUtil.showParticleAnimationOn(seekBar, (Activity) readyListener);
     }
 }
