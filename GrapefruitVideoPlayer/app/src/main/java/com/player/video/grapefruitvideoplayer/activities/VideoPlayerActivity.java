@@ -41,6 +41,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
     private int seekBy;
     private int listIndex;
+    private boolean isSurfaceCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +138,25 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         previousImageButton.setVisibility(View.VISIBLE);
     }
 
+    private void initPlayer(SurfaceHolder holder){
+        try{
+            playerManager.initPlayer(holder, SharedDataSource.getInstance().get(listIndex).getFilePath());
+            isSurfaceCreated = true;
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private void changeCurrentVideo(){
+        getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
+        try {
+            playerManager.changeVideoTo(listIndex);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Unable to play this video", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -173,16 +193,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void changeCurrentVideo(){
-        getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
-        try {
-            playerManager.changeVideoTo(listIndex);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Unable to play this video", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void onClickPlayPause() {
         boolean isPlaying= playerManager.handlePlayPause();
         if(isPlaying){
@@ -195,8 +205,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
-        /*TODO: You have to re-init media player here. In Order to avoid NPE which occurs activity gets back
-        * from onPause to onResume*/
+        if(isSurfaceCreated && playerManager.isMediaPlayerNull()){
+            initPlayer(surfaceView.getHolder());
+        }
     }
 
     @Override
@@ -217,11 +228,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        try{
-            playerManager.initPlayer(holder, SharedDataSource.getInstance().get(listIndex).getFilePath());
-        }catch(IOException ex){
-            ex.printStackTrace();
-        }
+        initPlayer(holder);
+        isSurfaceCreated= true;
     }
 
     @Override
@@ -231,11 +239,39 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        isSurfaceCreated= false;
     }
 
     @Override
     public void onPlayerReady() {
         enablePlayerControls();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("lastPlayingPosition", playerManager.getLastPlayingPosition());
+        outState.putByte("lastState",playerManager.getLastState());
+
+        Log.d("www.d.com","saving state");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        playerManager.setLastPlayingPosition(savedInstanceState.getInt("lastPlayingPosition"));
+        playerManager.setLastState(savedInstanceState.getByte("lastState"));
+
+        switch (playerManager.getLastState()) {
+
+            case PlayerManager.STATE_PAUSE:
+                playPauseImageButton.setImageResource(R.drawable.ic_pause);
+                break;
+            case PlayerManager.STATE_PLAY:
+                playPauseImageButton.setImageResource(R.drawable.ic_play);
+                break;
+        }
     }
 }
