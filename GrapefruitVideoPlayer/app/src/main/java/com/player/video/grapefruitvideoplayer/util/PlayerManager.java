@@ -15,7 +15,9 @@ import com.player.video.grapefruitvideoplayer.callbacks.OnPlayerReadyListener;
 
 import java.io.IOException;
 
-public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
+public class PlayerManager implements MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener,
+        SeekBar.OnSeekBarChangeListener {
 
     public static final byte STATE_PLAY = 0;
     public static final byte STATE_PAUSE =1;
@@ -33,7 +35,6 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
     private Runnable updateProgress = new Runnable() {
         @Override
         public void run() {
-            lastPlayingPosition = player.getCurrentPosition();
             seekBar.setProgress(player.getCurrentPosition());
             durationProgressedTextView.setText(GPlayerUtil.formatDuration(player.getCurrentPosition()));
             progressHandler.postDelayed(this,1000);
@@ -45,8 +46,6 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
         this.durationProgressedTextView = durationProgressedTextView;
         this.readyListener= readyListener;
         progressHandler = new Handler();
-        lastPlayingPosition = 0;
-        lastState = -1; // Indicates no valid state
         this.seekBar.setOnSeekBarChangeListener(this);
     }
 
@@ -71,7 +70,6 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
             progressHandler.removeCallbacks(updateProgress);
             player.stop();
             player.release();
-            lastState= STATE_STOP;
             player = null;
         }
     }
@@ -101,13 +99,11 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
 
     public void changeVideoTo(int listIndex) throws IOException {
         progressHandler.removeCallbacks(updateProgress);
-        lastPlayingPosition = 0;
-        seekBar.setProgress(lastPlayingPosition);
+        seekBar.setProgress(0);
         durationProgressedTextView.setText("00:00");
 
         player.stop();
         player.reset();
-        lastState = STATE_STOP;
         initPlayer(SharedDataSource.getInstance().get(listIndex).getFilePath());
     }
 
@@ -124,6 +120,13 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
             player.start();
             lastState= STATE_PLAY;
         }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        // if auto play is on then call change video
+        // else do something so that user can press play to restart playing.
+        lastState= STATE_STOP;
     }
 
     @Override
@@ -147,8 +150,10 @@ public class PlayerManager implements MediaPlayer.OnPreparedListener, SeekBar.On
         return player == null;
     }
 
+    /*If player is null, it will produce NPE. Which means this method is invoked from an
+    inappropriate scope. So, this method must be called before releasing the player. */
     public int getLastPlayingPosition() {
-        return lastPlayingPosition;
+        return player.getCurrentPosition();
     }
 
     public void setLastPlayingPosition(int lastPlayingPosition) {

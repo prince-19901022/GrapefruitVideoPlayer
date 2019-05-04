@@ -1,5 +1,6 @@
 package com.player.video.grapefruitvideoplayer.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.player.video.grapefruitvideoplayer.R;
 import com.player.video.grapefruitvideoplayer.callbacks.OnPlayerReadyListener;
 import com.player.video.grapefruitvideoplayer.callbacks.SeekTimeSelectionListener;
+import com.player.video.grapefruitvideoplayer.model.PlayerViewModel;
 import com.player.video.grapefruitvideoplayer.util.PlayerManager;
 import com.player.video.grapefruitvideoplayer.util.GPlayerUtil;
 import com.player.video.grapefruitvideoplayer.util.SharedDataSource;
@@ -43,6 +45,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private int listIndex;
     private boolean isSurfaceCreated = false;
 
+    private PlayerViewModel playerViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listIndex= getIntent().getExtras().getInt(getString(R.string.list_index));
+        playerViewModel= ViewModelProviders.of(this).get(PlayerViewModel.class);
 
         getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
         initialise();
@@ -140,6 +145,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
     private void initPlayer(SurfaceHolder holder){
         try{
+            playerManager.setLastPlayingPosition(playerViewModel.getLastPlayingPosition());
+            playerManager.setLastState(playerViewModel.getLastPlayingState());
             playerManager.initPlayer(holder, SharedDataSource.getInstance().get(listIndex).getFilePath());
             isSurfaceCreated = true;
         }catch(IOException ex){
@@ -147,9 +154,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void releasePlayer(){
+        playerViewModel.setLastPlayingPosition(playerManager.getLastPlayingPosition());
+        playerViewModel.setLastPlayingState(playerManager.getLastState());
+        playerManager.releasePlayer();
+    }
+
     private void changeCurrentVideo(){
         getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
         try {
+            playerManager.setLastState((byte) -1);
+            playerManager.setLastPlayingPosition(0);
             playerManager.changeVideoTo(listIndex);
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,7 +229,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     protected void onPause() {
         super.onPause();
         if(Build.VERSION.SDK_INT <= 23){
-            playerManager.releasePlayer();
+            releasePlayer();
         }
     }
 
@@ -222,7 +237,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     protected void onStop() {
         super.onStop();
         if(Build.VERSION.SDK_INT > 23){
-            playerManager.releasePlayer();
+            releasePlayer();
         }
     }
 
@@ -245,33 +260,5 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onPlayerReady() {
         enablePlayerControls();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putInt("lastPlayingPosition", playerManager.getLastPlayingPosition());
-        outState.putByte("lastState",playerManager.getLastState());
-
-        Log.d("www.d.com","saving state");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        playerManager.setLastPlayingPosition(savedInstanceState.getInt("lastPlayingPosition"));
-        playerManager.setLastState(savedInstanceState.getByte("lastState"));
-
-        switch (playerManager.getLastState()) {
-
-            case PlayerManager.STATE_PAUSE:
-                playPauseImageButton.setImageResource(R.drawable.ic_pause);
-                break;
-            case PlayerManager.STATE_PLAY:
-                playPauseImageButton.setImageResource(R.drawable.ic_play);
-                break;
-        }
     }
 }
