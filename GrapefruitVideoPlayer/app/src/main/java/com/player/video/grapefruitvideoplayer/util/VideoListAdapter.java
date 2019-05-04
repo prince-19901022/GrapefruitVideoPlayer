@@ -13,10 +13,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.player.video.grapefruitvideoplayer.R;
 import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
+import com.player.video.grapefruitvideoplayer.model.VideoModel;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VideoListAdapter  extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>{
 

@@ -6,7 +6,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.player.video.grapefruitvideoplayer.util.VideoModel;
+import com.player.video.grapefruitvideoplayer.model.GPlayerViewModel;
+import com.player.video.grapefruitvideoplayer.model.VideoModel;
 import com.player.video.grapefruitvideoplayer.database.Thumbnail;
 import com.player.video.grapefruitvideoplayer.database.ThumbnailDatabase;
 

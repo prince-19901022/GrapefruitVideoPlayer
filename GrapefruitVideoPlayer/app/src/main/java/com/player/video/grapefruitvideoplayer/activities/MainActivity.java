@@ -13,13 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.player.video.grapefruitvideoplayer.R;
-import com.player.video.grapefruitvideoplayer.task.GPlayerViewModel;
+import com.player.video.grapefruitvideoplayer.model.GPlayerViewModel;
 import com.player.video.grapefruitvideoplayer.task.LoadingTask;
 import com.player.video.grapefruitvideoplayer.callbacks.VideoItemClickListener;
 import com.player.video.grapefruitvideoplayer.util.GPlayerObserver;
 import com.player.video.grapefruitvideoplayer.util.SharedDataSource;
 import com.player.video.grapefruitvideoplayer.util.VideoListAdapter;
-import com.player.video.grapefruitvideoplayer.util.VideoModel;
+import com.player.video.grapefruitvideoplayer.model.VideoModel;
 
 import java.util.List;
 

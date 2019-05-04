@@ -1,5 +1,7 @@
 package com.player.video.grapefruitvideoplayer.util;
 
+import com.player.video.grapefruitvideoplayer.model.VideoModel;
+
 import java.util.List;
 
 public class SharedDataSource {

@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.player.video.grapefruitvideoplayer.task.GPlayerExecutor;
-import com.player.video.grapefruitvideoplayer.task.GPlayerViewModel;
+import com.player.video.grapefruitvideoplayer.model.GPlayerViewModel;
 import com.player.video.grapefruitvideoplayer.task.LoadingTask;
 
 public class GPlayerObserver extends ContentObserver {
