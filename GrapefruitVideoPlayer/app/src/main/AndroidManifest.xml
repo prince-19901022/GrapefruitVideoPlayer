@@ -22,6 +22,7 @@
         </activity>
 
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".activities.VideoPlayerActivity"
             android:parentActivityName=".activities.MainActivity">
 
