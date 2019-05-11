@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.transition.TransitionManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,6 +72,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setTitle(SharedDataSource.getInstance().get(listIndex).getTitle());
         initialise();
         disablePlayerControls();
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            configLayoutForLandscapeMode();
+        }
     }
 
     @Override
@@ -236,28 +241,38 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void configLayoutForLandscapeMode(){
+        //This will hide action bar and status bar and make the activity fullscreen.
+        getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_IMMERSIVE
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+        );
         TransitionManager.beginDelayedTransition(rootLayout);
 //Expanding video to full screen.
         landscapeSet.setDimensionRatio(surfaceView.getId(), "0:0");
-//Expanding landscape view to the full screen.
+//Expanding control view to the full screen.
         landscapeSet.connect(landScapeControlView.getId(),
                 ConstraintSet.RIGHT,
-                rootLayout.getId(),
+                ConstraintSet.PARENT_ID,
                 ConstraintSet.RIGHT,
                 0);
 
         landscapeSet.connect(landScapeControlView.getId(),
                 ConstraintSet.BOTTOM,
-                rootLayout.getId(),
+                ConstraintSet.PARENT_ID,
                 ConstraintSet.BOTTOM,
                 0);
 
+//Positioning next and prev button
         landscapeSet.connect(previousImageButton.getId(),
                 ConstraintSet.LEFT,
                 landScapeControlView.getId(),
                 ConstraintSet.LEFT,
                 0);
-//Positioning next and prev button
+
         landscapeSet.connect(previousImageButton.getId(),
                 ConstraintSet.TOP,
                 landScapeControlView.getId(),
@@ -383,6 +398,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void configLayoutForPortraitMode(){
+        //This will show system ui means action bar and status bar.
+        getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        );
         TransitionManager.beginDelayedTransition(rootLayout);
         portraitSet.setDimensionRatio(surfaceView.getId(), "4:3");
         portraitSet.applyTo(rootLayout);
@@ -421,22 +440,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         super.onConfigurationChanged(newConfig);
 
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            //This will hide action bar and status bar and make the activity fullscreen.
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-            );
             configLayoutForLandscapeMode();
-
         }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            //This will show system ui means action bar and status bar.
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            );
             configLayoutForPortraitMode();
         }
     }
