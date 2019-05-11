@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
+import android.support.transition.TransitionManager;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -38,6 +41,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private ImageButton fastForwardImageButton;
     private ImageButton fastRewindImageButton;
     private ImageButton playPauseImageButton;
+    private View landScapeControlView;
+    private TextView timeElapsedTextView;
+    private TextView totalDurationTextView;
+    private AppCompatSeekBar seekBar;
 
     private SurfaceView surfaceView;
     private PlayerManager playerManager;
@@ -47,6 +54,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     private boolean isSurfaceCreated = false;
 
     private PlayerViewModel playerViewModel;
+    private ConstraintSet portraitSet;
+    private ConstraintSet landscapeSet;
+    private ConstraintLayout rootLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +109,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initialise(){
+        rootLayout = findViewById(R.id.cl_layout_root);
+        landScapeControlView= findViewById(R.id.control_view_landscape);
         surfaceView = findViewById(R.id.surfaceView);
         nextImageButton = findViewById(R.id.btn_next);
         previousImageButton = findViewById(R.id.btn_prev);
@@ -107,17 +119,16 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         fastRewindImageButton = findViewById(R.id.btn_fast_rewind);
 
         playPauseImageButton = findViewById(R.id.btn_play_pause);
-
-        final TextView totalDurationTextView = findViewById(R.id.tv_total_progress);
+        totalDurationTextView = findViewById(R.id.tv_total_progress);
+        timeElapsedTextView= findViewById(R.id.tv_progress_time);
+        seekBar= findViewById(R.id.seek_bar_portrait);
         totalDurationTextView.setText(GPlayerUtil.formatDuration(SharedDataSource.getInstance().
                 get(listIndex).
                 getDurationInMilliSecond()));
 
         surfaceView.getHolder().addCallback(this);
 
-        playerManager= new PlayerManager(this,
-                (AppCompatSeekBar) findViewById(R.id.seek_bar_portrait), 
-                (TextView) findViewById(R.id.tv_progress_time));
+        playerManager= new PlayerManager(this, seekBar, timeElapsedTextView);
 
         nextImageButton.setOnClickListener(this);
         previousImageButton.setOnClickListener(this);
@@ -128,6 +139,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         seekBy= getResources().getIntArray(R.array.milliseconds)[
                 getPreferences(Context.MODE_PRIVATE).
                         getInt(getString(R.string.seek_time_id), 0)];
+
+        portraitSet= new ConstraintSet();
+        portraitSet.clone(rootLayout);
+
+        landscapeSet= new ConstraintSet();
+        landscapeSet.clone(rootLayout);
     }
 
     private void disablePlayerControls(){
@@ -218,6 +235,163 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void configLayoutForLandscapeMode(){
+        TransitionManager.beginDelayedTransition(rootLayout);
+//Expanding video to full screen.
+        landscapeSet.setDimensionRatio(surfaceView.getId(), "0:0");
+//Expanding landscape view to the full screen.
+        landscapeSet.connect(landScapeControlView.getId(),
+                ConstraintSet.RIGHT,
+                rootLayout.getId(),
+                ConstraintSet.RIGHT,
+                0);
+
+        landscapeSet.connect(landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                rootLayout.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+
+        landscapeSet.connect(previousImageButton.getId(),
+                ConstraintSet.LEFT,
+                landScapeControlView.getId(),
+                ConstraintSet.LEFT,
+                0);
+//Positioning next and prev button
+        landscapeSet.connect(previousImageButton.getId(),
+                ConstraintSet.TOP,
+                landScapeControlView.getId(),
+                ConstraintSet.TOP,
+                0);
+
+        landscapeSet.connect(nextImageButton.getId(),
+                ConstraintSet.RIGHT,
+                landScapeControlView.getId(),
+                ConstraintSet.RIGHT,
+                0);
+
+        landscapeSet.connect(nextImageButton.getId(),
+                ConstraintSet.TOP,
+                landScapeControlView.getId(),
+                ConstraintSet.TOP,
+                0);
+
+// Positioning fast rewind button.
+        landscapeSet.connect(fastRewindImageButton.getId(), 
+                ConstraintSet.START, 
+                landScapeControlView.getId(),
+                ConstraintSet.START,
+                0);
+        
+        landscapeSet.connect(fastRewindImageButton.getId(),
+                ConstraintSet.TOP,
+                landScapeControlView.getId(),
+                ConstraintSet.TOP,
+                0);
+        
+        landscapeSet.connect(fastRewindImageButton.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+// Positioning fast forward button.        
+        landscapeSet.connect(fastForwardImageButton.getId(), 
+                ConstraintSet.END,
+                landScapeControlView.getId(),
+                ConstraintSet.END,
+                0);
+        
+        landscapeSet.connect(fastForwardImageButton.getId(),
+                ConstraintSet.TOP,
+                landScapeControlView.getId(),
+                ConstraintSet.TOP,
+                0);
+        
+        landscapeSet.connect(fastForwardImageButton.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+        //Positioning play-pause button
+        landscapeSet.connect(playPauseImageButton.getId(),
+                ConstraintSet.START,
+                fastRewindImageButton.getId(),
+                ConstraintSet.END,
+                0);
+
+        landscapeSet.connect(playPauseImageButton.getId(),
+                ConstraintSet.END,
+                fastForwardImageButton.getId(),
+                ConstraintSet.START,
+                0);
+
+        landscapeSet.connect(playPauseImageButton.getId(),
+                ConstraintSet.TOP,
+                landScapeControlView.getId(),
+                ConstraintSet.TOP,
+                0);
+
+        landscapeSet.connect(playPauseImageButton.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+// Positioning time elapsed text view
+        landscapeSet.connect(timeElapsedTextView.getId(),
+                ConstraintSet.START,
+                landScapeControlView.getId(),
+                ConstraintSet.START,
+                dpToPx(8.0f));
+
+        landscapeSet.connect(timeElapsedTextView.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+// Positioning total duration text view
+        landscapeSet.connect(totalDurationTextView.getId(),
+                ConstraintSet.END,
+                landScapeControlView.getId(),
+                ConstraintSet.END,
+                dpToPx(8.0f));
+
+        landscapeSet.connect(totalDurationTextView.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+// Positioning Seek Bar
+        landscapeSet.connect(seekBar.getId(),
+                ConstraintSet.BOTTOM,
+                landScapeControlView.getId(),
+                ConstraintSet.BOTTOM,
+                0);
+
+        landscapeSet.connect(seekBar.getId(),
+                ConstraintSet.START,
+                timeElapsedTextView.getId(),
+                ConstraintSet.END,
+                0);
+
+        landscapeSet.connect(seekBar.getId(),
+                ConstraintSet.END,
+                totalDurationTextView.getId(),
+                ConstraintSet.START,
+                0);
+
+        landscapeSet.applyTo(rootLayout);
+    }
+
+    private void configLayoutForPortraitMode(){
+        TransitionManager.beginDelayedTransition(rootLayout);
+        portraitSet.setDimensionRatio(surfaceView.getId(), "4:3");
+        portraitSet.applyTo(rootLayout);
+    }
+
+    private int dpToPx(float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -255,12 +429,15 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
             );
+            configLayoutForLandscapeMode();
+
         }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             //This will show system ui means action bar and status bar.
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             );
+            configLayoutForPortraitMode();
         }
     }
 
