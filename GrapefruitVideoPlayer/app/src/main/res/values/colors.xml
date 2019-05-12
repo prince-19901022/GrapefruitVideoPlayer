@@ -10,5 +10,6 @@
     <color name="progress_color">#e8201f</color>
     <color name="colorDurationBg">#ad101010</color>
     <color name="colorPlayerBg">#c6101010</color>
+    <color name="colorPlayerBgLight">#73101010</color>
     <color name="colorDurationText">#adFFFFFF</color>
 </resources>

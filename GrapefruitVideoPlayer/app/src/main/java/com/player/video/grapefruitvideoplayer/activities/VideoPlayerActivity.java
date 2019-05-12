@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.transition.TransitionManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -124,8 +123,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         fastRewindImageButton = findViewById(R.id.btn_fast_rewind);
 
         playPauseImageButton = findViewById(R.id.btn_play_pause);
-        totalDurationTextView = findViewById(R.id.tv_total_progress);
-        timeElapsedTextView= findViewById(R.id.tv_progress_time);
+        totalDurationTextView = findViewById(R.id.tv_total_duration);
+        timeElapsedTextView= findViewById(R.id.tv_time_elapsed);
         seekBar= findViewById(R.id.seek_bar_portrait);
         totalDurationTextView.setText(GPlayerUtil.formatDuration(SharedDataSource.getInstance().
                 get(listIndex).
@@ -255,9 +254,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         landscapeSet.setDimensionRatio(surfaceView.getId(), "0:0");
 //Expanding control view to the full screen.
         landscapeSet.connect(landScapeControlView.getId(),
-                ConstraintSet.RIGHT,
+                ConstraintSet.END,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.RIGHT,
+                ConstraintSet.END,
                 0);
 
         landscapeSet.connect(landScapeControlView.getId(),
@@ -266,32 +265,43 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 ConstraintSet.BOTTOM,
                 0);
 
-//Positioning next and prev button
+//Positioning prev button
+        landscapeSet.clear(previousImageButton.getId(), ConstraintSet.START);
+        landscapeSet.clear(previousImageButton.getId(), ConstraintSet.TOP);
+        landscapeSet.clear(previousImageButton.getId(), ConstraintSet.BOTTOM);
+
         landscapeSet.connect(previousImageButton.getId(),
-                ConstraintSet.LEFT,
+                ConstraintSet.START,
                 landScapeControlView.getId(),
-                ConstraintSet.LEFT,
+                ConstraintSet.START,
                 0);
 
         landscapeSet.connect(previousImageButton.getId(),
                 ConstraintSet.TOP,
                 landScapeControlView.getId(),
                 ConstraintSet.TOP,
+                dpToPx(8.0f));
+//Positioning next button
+        landscapeSet.clear(nextImageButton.getId(), ConstraintSet.END);
+        landscapeSet.clear(nextImageButton.getId(), ConstraintSet.TOP);
+        landscapeSet.clear(nextImageButton.getId(), ConstraintSet.BOTTOM);
+
+        landscapeSet.connect(nextImageButton.getId(),
+                ConstraintSet.END,
+                landScapeControlView.getId(),
+                ConstraintSet.END,
                 0);
 
         landscapeSet.connect(nextImageButton.getId(),
-                ConstraintSet.RIGHT,
-                landScapeControlView.getId(),
-                ConstraintSet.RIGHT,
-                0);
-
-        landscapeSet.connect(nextImageButton.getId(),
                 ConstraintSet.TOP,
                 landScapeControlView.getId(),
                 ConstraintSet.TOP,
-                0);
+                dpToPx(8.0f));
 
 // Positioning fast rewind button.
+        landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.START);
+        landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.BOTTOM);
+        landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.TOP);
         landscapeSet.connect(fastRewindImageButton.getId(), 
                 ConstraintSet.START, 
                 landScapeControlView.getId(),
@@ -309,7 +319,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 landScapeControlView.getId(),
                 ConstraintSet.BOTTOM,
                 0);
-// Positioning fast forward button.        
+// Positioning fast forward button.
+        landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.END);
+        landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.BOTTOM);
+        landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.TOP);
         landscapeSet.connect(fastForwardImageButton.getId(), 
                 ConstraintSet.END,
                 landScapeControlView.getId(),
@@ -327,7 +340,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 landScapeControlView.getId(),
                 ConstraintSet.BOTTOM,
                 0);
-        //Positioning play-pause button
+//Positioning play-pause button
+        landscapeSet.clear(playPauseImageButton.getId(), ConstraintSet.START);
+        landscapeSet.clear(playPauseImageButton.getId(), ConstraintSet.END);
+        landscapeSet.clear(playPauseImageButton.getId(), ConstraintSet.TOP);
+        landscapeSet.clear(playPauseImageButton.getId(), ConstraintSet.BOTTOM);
+
         landscapeSet.connect(playPauseImageButton.getId(),
                 ConstraintSet.START,
                 fastRewindImageButton.getId(),
@@ -352,11 +370,21 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 ConstraintSet.BOTTOM,
                 0);
 // Positioning time elapsed text view
+        landscapeSet.clear(timeElapsedTextView.getId(), ConstraintSet.START);
+        landscapeSet.clear(timeElapsedTextView.getId(), ConstraintSet.TOP);
+        landscapeSet.clear(timeElapsedTextView.getId(), ConstraintSet.BOTTOM);
+
         landscapeSet.connect(timeElapsedTextView.getId(),
                 ConstraintSet.START,
                 landScapeControlView.getId(),
                 ConstraintSet.START,
-                dpToPx(8.0f));
+                0);
+
+        landscapeSet.connect(timeElapsedTextView.getId(),
+                ConstraintSet.TOP,
+                seekBar.getId(),
+                ConstraintSet.TOP,
+                0);
 
         landscapeSet.connect(timeElapsedTextView.getId(),
                 ConstraintSet.BOTTOM,
@@ -364,6 +392,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 ConstraintSet.BOTTOM,
                 0);
 // Positioning total duration text view
+        landscapeSet.clear(totalDurationTextView.getId(), ConstraintSet.END);
+        landscapeSet.clear(totalDurationTextView.getId(), ConstraintSet.TOP);
+        landscapeSet.clear(totalDurationTextView.getId(), ConstraintSet.BOTTOM);
+
         landscapeSet.connect(totalDurationTextView.getId(),
                 ConstraintSet.END,
                 landScapeControlView.getId(),
@@ -375,7 +407,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 landScapeControlView.getId(),
                 ConstraintSet.BOTTOM,
                 0);
+
+        landscapeSet.connect(totalDurationTextView.getId(),
+                ConstraintSet.TOP,
+                seekBar.getId(),
+                ConstraintSet.TOP,
+                0);
 // Positioning Seek Bar
+        landscapeSet.clear(seekBar.getId(), ConstraintSet.LEFT);
+        landscapeSet.clear(seekBar.getId(), ConstraintSet.RIGHT);
+        landscapeSet.clear(seekBar.getId(), ConstraintSet.TOP);
+
         landscapeSet.connect(seekBar.getId(),
                 ConstraintSet.BOTTOM,
                 landScapeControlView.getId(),
