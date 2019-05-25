@@ -163,6 +163,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         fastForwardImageButton.setVisibility(View.VISIBLE);
         nextImageButton.setVisibility(View.VISIBLE);
         previousImageButton.setVisibility(View.VISIBLE);
+        landScapeControlView.setVisibility(View.VISIBLE);
     }
 
     private void initPlayer(SurfaceHolder holder){
@@ -227,6 +228,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                         (listIndex - 1);
                 changeCurrentVideo();
                 break;
+            case R.id.surfaceView:
+                showControlView();
+                Toast.makeText(this, "Landscape Control should fade in now.",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -249,10 +254,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
         );
-        TransitionManager.beginDelayedTransition(rootLayout);
 //Expanding video to full screen.
         landscapeSet.setDimensionRatio(surfaceView.getId(), "0:0");
-//Expanding control view to the full screen.
+        landscapeSet.applyTo(rootLayout);
+    }
+
+    private void showControlView(){
+        //Expanding control view to the full screen.
+        TransitionManager.beginDelayedTransition(rootLayout);
         landscapeSet.connect(landScapeControlView.getId(),
                 ConstraintSet.END,
                 ConstraintSet.PARENT_ID,
@@ -302,18 +311,18 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.START);
         landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.BOTTOM);
         landscapeSet.clear(fastRewindImageButton.getId(),ConstraintSet.TOP);
-        landscapeSet.connect(fastRewindImageButton.getId(), 
-                ConstraintSet.START, 
+        landscapeSet.connect(fastRewindImageButton.getId(),
+                ConstraintSet.START,
                 landScapeControlView.getId(),
                 ConstraintSet.START,
                 0);
-        
+
         landscapeSet.connect(fastRewindImageButton.getId(),
                 ConstraintSet.TOP,
                 landScapeControlView.getId(),
                 ConstraintSet.TOP,
                 0);
-        
+
         landscapeSet.connect(fastRewindImageButton.getId(),
                 ConstraintSet.BOTTOM,
                 landScapeControlView.getId(),
@@ -323,18 +332,18 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.END);
         landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.BOTTOM);
         landscapeSet.clear(fastForwardImageButton.getId(), ConstraintSet.TOP);
-        landscapeSet.connect(fastForwardImageButton.getId(), 
+        landscapeSet.connect(fastForwardImageButton.getId(),
                 ConstraintSet.END,
                 landScapeControlView.getId(),
                 ConstraintSet.END,
                 0);
-        
+
         landscapeSet.connect(fastForwardImageButton.getId(),
                 ConstraintSet.TOP,
                 landScapeControlView.getId(),
                 ConstraintSet.TOP,
                 0);
-        
+
         landscapeSet.connect(fastForwardImageButton.getId(),
                 ConstraintSet.BOTTOM,
                 landScapeControlView.getId(),
@@ -435,7 +444,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 totalDurationTextView.getId(),
                 ConstraintSet.START,
                 0);
-
         landscapeSet.applyTo(rootLayout);
     }
 
@@ -483,8 +491,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
 
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
             configLayoutForLandscapeMode();
+            disablePlayerControls();
+            surfaceView.setOnClickListener(this);
         }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             configLayoutForPortraitMode();
+            enablePlayerControls();
+            surfaceView.setOnClickListener(null);
         }
     }
 
