@@ -25,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPlayerBgLight"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -46,6 +47,20 @@
         android:src="@drawable/ic_skip_next_black_24dp"
         android:padding="@dimen/touch_target_padding_portrait"
         android:background="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/surfaceView"/>
+
+    <!--Close button is used in landscape control view. -->
+    <!--It's job is to remove control view.-->
+    <ImageButton
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        android:padding="@dimen/touch_target_padding_portrait"
+        android:background="@null"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/surfaceView"/>
